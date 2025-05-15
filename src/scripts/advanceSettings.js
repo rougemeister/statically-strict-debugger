@@ -1,6 +1,5 @@
 'use strict'
 
-import General from "./general.js";
 import Light from './basicSettings.js';
 
 class AdvanceSettings extends Light {
@@ -33,7 +32,7 @@ class AdvanceSettings extends Light {
                 <div class="edit">
                     <p>Customize</p>
                     <button class="customization-btn">
-                        <img src="./assets/svgs/edit.svg" alt="customize settings svg icon">
+                        <img src="./src/assets/svgs/edit.svg" alt="customize settings svg icon">
                     </button>
                 </div>
                 <section class="customization-details hidden">
@@ -64,11 +63,11 @@ class AdvanceSettings extends Light {
                     </div>
                 </section>
                 <button class="close-btn">
-                    <img src="./assets/svgs/close.svg" alt="close button svg icon">
+                    <img src="./src/assets/svgs/close.svg" alt="close button svg icon">
                 </button>
             </section>
             <button class="close-btn">
-                <img src="./assets/svgs/close.svg" alt="close button svg icon">
+                <img src="./src/assets/svgs/close.svg" alt="close button svg icon">
             </button>
         </div>
         `;

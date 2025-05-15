@@ -11,7 +11,7 @@ class Light extends General {
         return `
             <div class="notification">
                 <div>
-                    <img src="./assets/svgs/checked.svg" alt="checked svg icon on notifications" >
+                    <img src="./src/assets/svgs/checked.svg" alt="checked svg icon on notifications" >
                 </div>
                 <p>${message}</p>
             </div>
@@ -30,13 +30,13 @@ class Light extends General {
     }
 
     lightSwitchOn (lightButtonElement) {
-        lightButtonElement.setAttribute('src', './assets/svgs/light_bulb.svg');
-        lightButtonElement.setAttribute('data-lightOn', './assets/svgs/light_bulb_off.svg');
+        lightButtonElement.setAttribute('src', './src/assets/svgs/light_bulb.svg');
+        lightButtonElement.setAttribute('data-lightOn', './src/assets/svgs/light_bulb_off.svg');
     }
 
     lightSwitchOff (lightButtonElement) {
-        lightButtonElement.setAttribute('src', './assets/svgs/light_bulb_off.svg');
-        lightButtonElement.setAttribute('data-lightOn', './assets/svgs/light_bulb.svg');
+        lightButtonElement.setAttribute('src', './src/assets/svgs/light_bulb_off.svg');
+        lightButtonElement.setAttribute('data-lightOn', './src/assets/svgs/light_bulb.svg');
     }
 
     lightComponentSelectors(lightButtonElement) {
