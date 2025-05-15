@@ -6,7 +6,7 @@ class General {
         ['outdoor lights']: { name: 'outdoor lights', lightIntensity: 5,  numOfLights: 6, isLightOn: false, autoOn: '06:30', autoOff: '22:00', usage: [15, 12, 13, 9, 12, 13, 18] },
         ['guest room']: { name: 'guest room', lightIntensity: 5,  numOfLights: 4, isLightOn: false, autoOn: '06:30', autoOff: '22:00', usage: [12, 10, 3, 9, 5, 5, 18] },
         kitchen: { name: 'kitchen', lightIntensity: 5,  numOfLights: 3, isLightOn: false, autoOn: '06:30', autoOff: '22:00', usage: [12, 19, 13, 11, 12, 13, 18] },
-        [['walkway & corridor']]: { name: 'walkway & corridor', lightIntensity: 5,  numOfLights: 8, isLightOn: false, autoOn: '06:30', autoOff: '22:00', usage: [12, 19, 13, 15, 22, 23, 18] },
+        ['walkway & corridor']: { name: 'walkway & corridor', lightIntensity: 5,  numOfLights: 8, isLightOn: false, autoOn: '06:30', autoOff: '22:00', usage: [12, 19, 13, 15, 22, 23, 18] },
     }
 
     wifiConnections = [
@@ -79,7 +79,7 @@ class General {
     }
 
     updateComponentData(data) {
-        this.componentsData
+        this.componentsData[data.name] = {...this.componentsData[data.name], ...data};
     }
 
     updateMarkupValue(element, value) {
@@ -93,6 +93,7 @@ class General {
     removeHidden(element) {
         element.classList.remove('hidden');
     }
+    
     addHidden(element) {
         element.classList.add('hidden');
     }
@@ -106,14 +107,11 @@ class General {
             parent = this.selector(`.${elementClassName}`);
         } else if (roomData.name === 'outdoor lights') {
             parent = this.selector('.outside_lights');
-
         } else {
             parent = this.selector(`.${roomData.name}`);
         }
         
         const buttonElement = parent.querySelector('.light-switch');
-
-        if (roomData['element']) return;
         
         roomData['element'] = buttonElement;
     }
@@ -125,4 +123,5 @@ class General {
     }
 }
 
-export default General
+
+export default General;
