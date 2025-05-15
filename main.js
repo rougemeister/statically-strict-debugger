@@ -1,4 +1,4 @@
-'use script'
+'use strict'
 // elements declarations
 const homepageButton = document.querySelector('.entry_point');
 const homepage = document.querySelector('main');
@@ -29,15 +29,14 @@ homepageButton.addEventListener('click', function(e) {
         lightController.removeHidden(mainRoomsContainer);
         lightController.removeHidden(nav);
     }, 1000);
-})
-
+});
 
 mainRoomsContainer.addEventListener('click', (e) => {
     const selectedElement = e.target;
 
     // when click occurs on light switch
     if (selectedElement.closest(".light-switch")) {
-        const lightSwitch = selectedElement.closest(".basic_settings_buttons").firstElementChild;
+        const lightSwitch = selectedElement.closest(".light-switch");
         lightController.toggleLightSwitch(lightSwitch);
         return;
     }
@@ -49,20 +48,30 @@ mainRoomsContainer.addEventListener('click', (e) => {
     }
 });
 
+// Make slider changes responsive in real-time
+mainRoomsContainer.addEventListener('input', (e) => {
+    const slider = e.target;
+    if (slider.id === 'light_intensity') {
+        const value = parseInt(slider.value);
+        lightController.handleLightIntensitySlider(slider, value);
+    }
+});
+
+// For final change when user stops dragging the slider
 mainRoomsContainer.addEventListener('change', (e) => {
     const slider = e.target;
-    const value = slider.value;
-
-    lightController.handleLightIntensitySlider(slider, value);
-    
-})
+    if (slider.id === 'light_intensity') {
+        const value = parseInt(slider.value);
+        lightController.handleLightIntensitySlider(slider, value);
+    }
+});
 
 // advance settings modal
 advanceFeaturesContainer.addEventListener('click', (e) => {
     const selectedElement = e.target;
 
     if (selectedElement.closest('.close-btn')) {
-       advancedSettings.closeModalPopUp()
+       advancedSettings.closeModalPopUp();
     }
 
     // display customization markup
@@ -89,4 +98,3 @@ advanceFeaturesContainer.addEventListener('click', (e) => {
         }
     }
 });
-
