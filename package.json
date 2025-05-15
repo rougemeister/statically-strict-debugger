@@ -1,4 +1,14 @@
 {
+  "name": "statically-strict-debugger",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/scripts/main.js", 
+  "type": "module",              
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/scripts/main.js",
+    "watch": "tsc --watch"
+  },
   "devDependencies": {
     "typescript": "^5.8.3"
   }
