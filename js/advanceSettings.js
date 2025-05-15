@@ -6,7 +6,6 @@ import Light from './basicSettings.js';
 class AdvanceSettings extends Light {
     constructor () {
         super();
-
     }
 
     #markup (component) {
@@ -20,7 +19,6 @@ class AdvanceSettings extends Light {
                     <p class="number_of_lights">${numOfLights}</p>
                 </div>
                 <div>
-
                     <p class="auto_on">
                         <span>Automatic turn on:</span>
                         <span>${autoOn}</span>
@@ -42,22 +40,21 @@ class AdvanceSettings extends Light {
                     <div>
                         <h4>Automatic on/off settings</h4>
                         <div class="defaultOn">
-                            <label for="">Turn on</label>
-                            <input type="time" name="autoOnTime" id="autoOnTime">
+                            <label for="autoOnTime">Turn on</label>
+                            <input type="time" name="autoOnTime" id="autoOnTime" value="${autoOn}">
                             <div>
                                 <button class="defaultOn-okay">Okay</button>
                                 <button class="defaultOn-cancel">Cancel</button>
                             </div>
                         </div>
                         <div class="defaultOff">
-                            <label for="">Go off</label>
-                            <input type="time" name="autoOffTime" id="autoOffTime">
+                            <label for="autoOffTime">Go off</label>
+                            <input type="time" name="autoOffTime" id="autoOffTime" value="${autoOff}">
                             <div>
                                 <button class="defaultOff-okay">Okay</button>
                                 <button class="defaultOff-cancel">Cancel</button>
                             </div>
                         </div>
-
                     </div>
                 </section>
                 <section class="summary">
@@ -74,7 +71,7 @@ class AdvanceSettings extends Light {
                 <img src="./assets/svgs/close.svg" alt="close button svg icon">
             </button>
         </div>
-        `
+        `;
     }
 
     #analyticsUsage(data) {
@@ -113,7 +110,7 @@ class AdvanceSettings extends Light {
     }
 
     displayCustomization(selectedElement) {
-        const element = this.closestSelector(selectedElement, '.customization', '.customization-details')
+        const element = this.closestSelector(selectedElement, '.customization', '.customization-details');
         this.toggleHidden(element);
     }
 
@@ -122,27 +119,32 @@ class AdvanceSettings extends Light {
         const childElement = this.selector('.advanced_features');
 
         // remove child element from the DOM
-        childElement.remove()
+        childElement.remove();
         // hide parent element
         this.addHidden(parentElement);
     }
 
     customizationCancelled(selectedElement, parentSelectorIdentifier) {
         const element = this.closestSelector(selectedElement, parentSelectorIdentifier, 'input');
-        element.value = '';
-        return;
+        // Get the current component data to restore original value
+        const component = this.getComponentData(element, '.advanced_features', '.component_name');
+        
+        if (parentSelectorIdentifier === '.defaultOn') {
+            element.value = component.autoOn;
+        } else if (parentSelectorIdentifier === '.defaultOff') {
+            element.value = component.autoOff;
+        }
     }
 
     customizeAutomaticOnPreset(selectedElement) {
         const element = this.closestSelector(selectedElement, '.defaultOn', 'input');
-        const { value } = element;
+        const value = element.value;
         
-        // when value is falsy
-        if (!!value) return;
+        // Check if the value is valid
+        if (!value) return;
         
         const component = this.getComponentData(element, '.advanced_features', '.component_name');
         component.autoOn = value;
-        element.value = '';
 
         // selecting display or markup view
         const spanElement = this.selector('.auto_on > span:last-child');
@@ -152,20 +154,18 @@ class AdvanceSettings extends Light {
         this.setComponentElement(component);
         
         // handle light on automation
-        this.automateLight(component['autoOn'], component);
-
+        this.automateLight(component.autoOn, component);
     }
 
     customizeAutomaticOffPreset(selectedElement) {
         const element = this.closestSelector(selectedElement, '.defaultOff', 'input');
-        const { value } = element;
+        const value = element.value;
 
-        // when value is falsy
-        if (!!value) return; 
+        // Check if the value is valid
+        if (!value) return;
         
         const component = this.getComponentData(element, '.advanced_features', '.component_name');
         component.autoOff = value;
-        element.value = '';
 
         // selecting display or markup view
         const spanElement = this.selector('.auto_off > span:last-child');
@@ -175,35 +175,33 @@ class AdvanceSettings extends Light {
         this.setComponentElement(component);
         
         // handle light on automation
-        this.automateLight(component['autoOff'], component);
-
+        this.automateLight(component.autoOff, component);
     }
 
-    getSelectedComponent (componentName) {
+    getSelectedComponent(componentName) {
         if (!componentName) return this.componentsData;
         const component = this.componentsData[componentName.toLowerCase()];
         return component;
     }
 
-    getSelectedSettings (componentName) {
+    getSelectedSettings(componentName) {
         return this.markup(this.getSelectedComponent(componentName));
-
     }
 
-    setNewData (component, key, data) {
+    setNewData(component, key, data) {
         const selectedComponent = this.componentsData[component.toLowerCase()];
         return selectedComponent[key] = data;
     }
 
-    capFirstLetter (word) {
-        return word.replace(word.at(0), word.at(0).toUpperCase())
+    capFirstLetter(word) {
+        return word.replace(word.at(0), word.at(0).toUpperCase());
     }
 
     getObjectDetails() {
         return this;
     }
 
-    formatTime (time) {
+    formatTime(time) {
         const [hour, min] = time.split(':');
         
         const dailyAlarmTime = new Date();
@@ -212,17 +210,16 @@ class AdvanceSettings extends Light {
         dailyAlarmTime.setSeconds(0);
         
         return dailyAlarmTime;
-    };
+    }
 
-    timeDifference (selectedTime) {
+    timeDifference(selectedTime) {
         const now = new Date();
         const setTime = this.formatTime(selectedTime) - now;
-        console.log(setTime, now);
         return setTime;
     }
 
-    async timer (time, message, component) {
-        return new Promise ((resolve, reject) => {
+    async timer(time, message, component) {
+        return new Promise((resolve, reject) => {
             const checkAndTriggerAlarm = () => {
                 const now = new Date();
                 
@@ -231,28 +228,22 @@ class AdvanceSettings extends Light {
                     now.getMinutes() === time.getMinutes() &&
                     now.getSeconds() === time.getSeconds()
                 ) {
-                    resolve(this.toggleLightSwitch(component['element']))
+                    resolve(this.toggleLightSwitch(component['element']));
 
                     // stop timer
                     clearInterval(intervalId);
-                    
                 }
-            }
+            };
         
             // Check every second
             const intervalId = setInterval(checkAndTriggerAlarm, 1000);
-
-        })
+        });
     }
 
-    async automateLight (time, component) {
+    async automateLight(time, component) {
         const formattedTime = this.formatTime(time);
         return await this.timer(formattedTime, true, component);
     }
-
-
-
-
 }
 
 export default AdvanceSettings;
