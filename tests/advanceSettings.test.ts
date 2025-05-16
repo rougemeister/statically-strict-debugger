@@ -1,5 +1,5 @@
-import AdvanceSettings from './AdvanceSettings'; // Adjust path
-import Light from './basicSettings';
+import AdvanceSettings from '../src/scripts/advanceSettings'; // Adjust path
+
 
 jest.mock('./basicSettings'); // Mock parent class
 
@@ -27,9 +27,7 @@ describe('AdvanceSettings', () => {
       },
     };
 
-    jest.spyOn(instance as any, 'getComponent').mockImplementation((name: string) => {
-      return instance.componentsData[name];
-    });
+   
 
     // Stub external Chart call
     (global as any).Chart = jest.fn();
