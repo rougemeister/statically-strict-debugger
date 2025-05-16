@@ -12,7 +12,8 @@
     "esModuleInterop": true,                 // Allow default imports from CommonJS modules
     "forceConsistentCasingInFileNames": true,// Ensure file name case consistency
     "noImplicitAny": true,                   // Raise error on implicit `any` types
-    "skipLibCheck": true                     // Skip type checking of declaration files
+    "skipLibCheck": true,
+    "lib": ["es2020", "dom"]                    // Skip type checking of declaration files
   },
   "include": [
     "src/**/*"
