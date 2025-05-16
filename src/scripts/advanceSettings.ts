@@ -155,25 +155,78 @@ class AdvanceSettings extends Light {
     }
 
     /**
-     * Shows modal popup with advanced settings
+     * Finds the component name from an element or its parent
+     * @param element - The element to check for component information
+     * @returns The component name or null if not found
      */
-    modalPopUp(element: HTMLElement): void {
-        const selectedRoom = this.getSelectedComponentName(element);
-        const componentData = this.getComponent(selectedRoom);
-        const parentElement = document.querySelector('.advanced_features_container') as HTMLElement | null;
-        
-        if (!parentElement) {
-            console.error('Advanced features container not found');
-            return;
+    findComponentName(element: HTMLElement): string | null {
+        // Check if the element itself has a data-room attribute
+        if (element.dataset.room) {
+            return element.dataset.room;
         }
         
-        parentElement.classList.remove('hidden');
+        // Look for a parent element that has the data-room attribute
+        const roomElement = element.closest('[data-room]');
+        if (roomElement && roomElement instanceof HTMLElement) {
+            return roomElement.dataset.room || null;
+        }
         
-        // Display modal view
-        parentElement.insertAdjacentHTML('afterbegin', this.#markup(componentData));
+        // Look for a parent room container and get its id
+        const roomContainer = element.closest('.room-container');
+        if (roomContainer && roomContainer instanceof HTMLElement && roomContainer.id) {
+            return roomContainer.id;
+        }
+        
+        return null;
+    }
 
-        // Graph display
-        this.#analyticsUsage(componentData.usage);
+    /**
+     * Shows modal popup with advanced settings
+     * @param element - The element that triggered the modal or a component name string
+     */
+    modalPopUp(element: HTMLElement | string): void {
+        let selectedRoom: string;
+        
+        // Handle both element and direct string input
+        if (typeof element === 'string') {
+            selectedRoom = element;
+        } else {
+            // Try to find the component name from the element
+            const componentName = this.findComponentName(element);
+            
+            if (!componentName) {
+                // If no component name could be determined, try to infer from context
+                const currentActive = document.querySelector('.room-container.active');
+                if (currentActive && currentActive instanceof HTMLElement && currentActive.id) {
+                    selectedRoom = currentActive.id;
+                } else {
+                    console.error('Cannot determine component name. No room identifier found.');
+                    return;
+                }
+            } else {
+                selectedRoom = componentName;
+            }
+        }
+        
+        try {
+            const componentData = this.getComponent(selectedRoom);
+            const parentElement = document.querySelector('.advanced_features_container') as HTMLElement | null;
+            
+            if (!parentElement) {
+                console.error('Advanced features container not found');
+                return;
+            }
+            
+            parentElement.classList.remove('hidden');
+            
+            // Display modal view
+            parentElement.insertAdjacentHTML('afterbegin', this.#markup(componentData));
+    
+            // Graph display
+            this.#analyticsUsage(componentData.usage);
+        } catch (error) {
+            console.error('Error showing modal:', error);
+        }
     }
 
     /**
@@ -355,11 +408,11 @@ class AdvanceSettings extends Light {
      * Gets the name of the selected component from element
      */
     getSelectedComponentName(element: HTMLElement): string {
-        const room = element.dataset.room;
-        if (!room) {
-            throw new Error('Component name not found in data-room attribute');
+        const componentName = this.findComponentName(element);
+        if (!componentName) {
+            throw new Error('Component name not found in element or its parents');
         }
-        return room;
+        return componentName;
     }
 
     /**

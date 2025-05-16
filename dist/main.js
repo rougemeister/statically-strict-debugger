@@ -36,7 +36,28 @@ mainRoomsContainer.addEventListener('click', (e) => {
     // When click occurs on advance modal
     const advancedSettingsBtn = selectedElement.closest('.advance-settings_modal');
     if (advancedSettingsBtn) {
-        advancedSettings.modalPopUp(advancedSettingsBtn);
+        // Find the component name associated with this button
+        const roomContainer = advancedSettingsBtn.closest('.room-container');
+        if (roomContainer) {
+            // If we found a parent room container, use it to determine the component
+            if (roomContainer.id) {
+                // If the room container has an ID, we can use that
+                advancedSettings.modalPopUp(roomContainer.id);
+            }
+            else if (roomContainer.dataset.room) {
+                // If the room container has a data-room attribute, use that
+                advancedSettings.modalPopUp(roomContainer.dataset.room);
+            }
+            else {
+                // Fallback to using the button element and letting the AdvanceSettings class handle it
+                advancedSettings.modalPopUp(advancedSettingsBtn);
+            }
+        }
+        else {
+            // If no room container was found, fall back to using the button element
+            // The modified AdvanceSettings class will try to find a component name
+            advancedSettings.modalPopUp(advancedSettingsBtn);
+        }
     }
 });
 // Make slider changes responsive in real-time
